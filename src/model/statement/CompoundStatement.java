@@ -11,4 +11,9 @@ public record CompoundStatement(IStatement first, IStatement second) implements 
         stack.push(first);
         return state;
     }
+
+    @Override
+    public String toString() {
+        return "(" + first.toString() + "; " + second.toString() + ")";
+    }
 }

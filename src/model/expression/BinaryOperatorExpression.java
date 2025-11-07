@@ -61,4 +61,9 @@ public record BinaryOperatorExpression
             default -> throw new IllegalStateException("Unreachable code");
         };
     }
+
+    @Override
+    public String toString() {
+        return "(" + left.toString() + " " + operator + " " + right.toString() + ")";
+    }
 }

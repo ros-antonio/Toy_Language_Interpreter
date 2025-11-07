@@ -34,6 +34,10 @@ public class GenericList<T> implements IList<T> {
 
     @Override
     public String toString() {
-        return list.toString();
+        StringBuilder builder = new StringBuilder();
+        for(T element : list) {
+            builder.append(element.toString()).append("\n");
+        }
+        return builder.toString();
     }
 }

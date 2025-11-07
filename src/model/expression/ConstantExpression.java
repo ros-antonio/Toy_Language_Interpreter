@@ -9,4 +9,9 @@ public record ConstantExpression (IValue value) implements IExpression {
     public IValue evaluate(IDictionary<String, IValue> symTable) {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

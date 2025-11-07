@@ -10,4 +10,9 @@ public record PrintStatement(IExpression expression) implements IStatement {
         state.getOut().add(expression.evaluate(state.getSymTable()));
         return state;
     }
+
+    @Override
+    public String toString() {
+        return "print(" + expression.toString() + ")";
+    }
 }

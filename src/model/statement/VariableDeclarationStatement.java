@@ -15,4 +15,9 @@ public record VariableDeclarationStatement(Type type, String variableName) imple
         symbolTable.insert(variableName, type.getDefaultValue());
         return state;
     }
+
+    @Override
+    public String toString() {
+        return type.toString().toLowerCase() + " " + variableName;
+    }
 }

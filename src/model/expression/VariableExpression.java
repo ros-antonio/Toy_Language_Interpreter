@@ -15,4 +15,9 @@ public record VariableExpression(String variableName) implements IExpression {
             throw new ExpressionException("Variable not defined: " + variableName);
         }
     }
+
+    @Override
+    public String toString() {
+        return variableName;
+    }
 }

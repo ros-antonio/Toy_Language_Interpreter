@@ -1,4 +1,5 @@
 package model.containers;
+import java.util.ListIterator;
 import java.util.Stack;
 
 import exceptions.ADTException;
@@ -34,6 +35,11 @@ public class GenericStack<T> implements IStack<T> {
 
     @Override
     public String toString() {
-        return stack.toString();
+        StringBuilder builder = new StringBuilder();
+        ListIterator<T> iterator = stack.listIterator(stack.size());
+        while (iterator.hasPrevious()) {
+            builder.append(iterator.previous().toString()).append("\n");
+        }
+        return builder.toString();
     }
 }

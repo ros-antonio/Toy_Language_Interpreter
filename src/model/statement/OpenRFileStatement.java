@@ -1,0 +1,46 @@
+package model.statement;
+
+import exceptions.ExpressionException;
+import exceptions.StatementException;
+import model.containers.IDictionary;
+import model.expression.IExpression;
+import model.state.ProgramState;
+import model.type.Type;
+import model.value.IValue;
+import model.value.StringValue;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public record OpenRFileStatement(IExpression expression) implements IStatement {
+
+    @Override
+    public ProgramState execute(ProgramState state) throws StatementException, ExpressionException {
+        IDictionary<StringValue, BufferedReader> fileTable = state.getFileTable();
+        IValue value = expression.evaluate(state.getSymTable());
+
+        if (value.getType() != Type.STRING) {
+            throw new StatementException("File path expression '" + expression + "' is not a string type.");
+        }
+
+        StringValue filePath = (StringValue) value;
+
+        if (fileTable.hasKey(filePath)) {
+            throw new StatementException("File '" + filePath + "' is already open.");
+        }
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath.value()));
+            fileTable.insert(filePath, bufferedReader);
+        } catch (IOException e) {
+            throw new StatementException("Failed to open file '" + filePath.value() + "': " + e.getMessage());
+        }
+
+        return state;
+    }
+
+    @Override
+    public String toString() {
+        return "openRFile(" + expression.toString() + ")";
+    }
+}

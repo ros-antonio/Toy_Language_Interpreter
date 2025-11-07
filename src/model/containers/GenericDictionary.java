@@ -1,6 +1,7 @@
 package model.containers;
 
 import java.util.HashMap;
+import java.util.Map;
 import exceptions.ADTException;
 
 public class GenericDictionary<TKey, TValue> implements IDictionary<TKey, TValue> {
@@ -40,6 +41,13 @@ public class GenericDictionary<TKey, TValue> implements IDictionary<TKey, TValue
 
     @Override
     public String toString() {
-        return map.toString();
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<TKey, TValue> entry : map.entrySet()) {
+            builder.append(entry.getKey().toString())
+                    .append(" --> ")
+                    .append(entry.getValue().toString())
+                    .append("\n");
+        }
+        return builder.toString();
     }
 }

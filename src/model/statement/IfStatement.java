@@ -22,4 +22,9 @@ public record IfStatement(IExpression condition, IStatement thenBranch, IStateme
         }
         return state;
     }
+
+    @Override
+    public String toString() {
+        return "(if (" + condition.toString() + ") then (" + thenBranch.toString() + ") else (" + elseBranch.toString() + "))";
+    }
 }
