@@ -11,14 +11,10 @@ public enum Type {
     STRING;
 
     public IValue getDefaultValue() {
-        switch (this) {
-            case INTEGER:
-                return new IntegerValue(0);
-            case BOOLEAN:
-                return new BooleanValue(false);
-            case STRING:
-                return new StringValue("");
-        }
-        return null;
+        return switch (this) {
+            case INTEGER -> new IntegerValue(0);
+            case BOOLEAN -> new BooleanValue(false);
+            case STRING -> new StringValue("");
+        };
     }
 }

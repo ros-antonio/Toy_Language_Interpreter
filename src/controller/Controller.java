@@ -11,11 +11,9 @@ import repository.IRepository;
 
 public class Controller {
     public final IRepository repository;
-    private final boolean displayFlag;
 
-    public Controller(IRepository repository, boolean displayFlag) {
+    public Controller(IRepository repository) {
         this.repository = repository;
-        this.displayFlag = displayFlag;
     }
 
     public ProgramState oneStep(ProgramState programState)
@@ -32,21 +30,10 @@ public class Controller {
 
     public void allSteps() throws StatementException, ADTException, ExpressionException, RepositoryException {
         ProgramState programState = repository.getCrtPrg();
-
-        if (displayFlag) {
-            System.out.println("--- Initial Program State ---");
-            System.out.println(programState);
-        }
-
         repository.logPrgStateExec();
 
         while (!programState.getExeStack().isEmpty()) {
             oneStep(programState);
-
-            if (displayFlag) {
-                System.out.println("--- Next Step State ---");
-                System.out.println(programState);
-            }
             repository.logPrgStateExec();
         }
     }

@@ -27,6 +27,11 @@ public record BinaryOperatorExpression
                 var leftValueB = (BooleanValue) leftTerm;
                 var rightValueB = (BooleanValue) rightTerm;
                 return evaluateBooleanExpression(leftValueB, rightValueB);
+            case "<", "<=", "==", "!=", ">", ">=":
+                checkTypes(leftTerm, rightTerm, Type.INTEGER);
+                var leftValueC = (IntegerValue) leftTerm;
+                var rightValueC = (IntegerValue) rightTerm;
+                return evaluateRelationalExpression(leftValueC, rightValueC);
         }
 
         throw new ExpressionException("Unknown operator" + operator);
@@ -58,6 +63,18 @@ public record BinaryOperatorExpression
         return switch (operator) {
             case "&&" -> new BooleanValue(leftValue.value() && rightValue.value());
             case "||" -> new BooleanValue(leftValue.value() || rightValue.value());
+            default -> throw new IllegalStateException("Unreachable code");
+        };
+    }
+
+    private IValue evaluateRelationalExpression(IntegerValue leftValueC, IntegerValue rightValueC) {
+        return switch (operator) {
+            case "<" -> new BooleanValue(leftValueC.value() < rightValueC.value());
+            case "<=" -> new BooleanValue(leftValueC.value() <= rightValueC.value());
+            case "==" -> new BooleanValue(leftValueC.value() == rightValueC.value());
+            case "!=" -> new BooleanValue(leftValueC.value() != rightValueC.value());
+            case ">" -> new BooleanValue(leftValueC.value() > rightValueC.value());
+            case ">=" -> new BooleanValue(leftValueC.value() >= rightValueC.value());
             default -> throw new IllegalStateException("Unreachable code");
         };
     }
