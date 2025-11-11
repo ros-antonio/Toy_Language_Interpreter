@@ -6,6 +6,7 @@ import model.expression.IExpression;
 import model.state.ProgramState;
 import model.type.Type;
 import model.value.IValue;
+import model.value.IntegerValue;
 import model.value.StringValue;
 import java.io.BufferedReader;
 
@@ -44,7 +45,7 @@ public record ReadFileStatement(IExpression expression, String varName) implemen
                     throw new StatementException("The line read from file '" + filePath + "' is not a valid integer.");
                 }
             }
-            symTable.update(varName, new model.value.IntegerValue(intValue));
+            symTable.update(varName, new IntegerValue(intValue));
         } catch (Exception e) {
             throw new StatementException("Error reading from file '" + filePath + "': " + e.getMessage());
         }
