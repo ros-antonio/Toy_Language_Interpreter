@@ -4,7 +4,7 @@ import exceptions.StatementException;
 import model.containers.IDictionary;
 import model.expression.IExpression;
 import model.state.ProgramState;
-import model.type.Type;
+import model.type.StringType;
 import model.value.IValue;
 import model.value.StringValue;
 
@@ -16,8 +16,8 @@ public record CloseRFileStatement(IExpression expression) implements IStatement 
     public ProgramState execute(ProgramState state) {
         IDictionary<StringValue, BufferedReader> fileTable = state.getFileTable();
 
-        IValue value = expression.evaluate(state.getSymTable());
-        if(value.getType() != Type.STRING) {
+        IValue value = expression.evaluate(state.getSymTable(), state.getHeap());
+        if(!value.getType().equals(new StringType())) {
             throw new RuntimeException("File path expression '" + expression + "' is not a string type.");
         }
 

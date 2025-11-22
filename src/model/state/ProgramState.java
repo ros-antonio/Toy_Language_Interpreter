@@ -6,6 +6,7 @@ import model.containers.IDictionary;
 import model.statement.IStatement;
 import model.value.IValue;
 import model.value.StringValue;
+import model.containers.IHeap;
 
 import java.io.BufferedReader;
 
@@ -14,13 +15,23 @@ public class ProgramState {
     private IDictionary<String, IValue> symTable;
     private IList<IValue> out;
     private IDictionary<StringValue, BufferedReader> fileTable;
+    private IHeap<IValue> heap;
 
     public ProgramState(IStack<IStatement> exeStack, IDictionary<String, IValue> symTable,
-                        IList<IValue> out, IDictionary<StringValue, BufferedReader> fileTable) {
+                        IList<IValue> out, IDictionary<StringValue, BufferedReader> fileTable, IHeap<IValue> heap) {
         this.exeStack = exeStack;
         this.symTable = symTable;
         this.out = out;
         this.fileTable = fileTable;
+        this.heap = heap;
+    }
+
+    public IHeap<IValue> getHeap() {
+        return heap;
+    }
+
+    public void setHeap(IHeap<IValue> heap) {
+        this.heap = heap;
     }
 
     public IDictionary<StringValue, BufferedReader> getFileTable() {
@@ -60,6 +71,7 @@ public class ProgramState {
         return "ExeStack:\n" + exeStack.toString() +
                 "\nSymTable:\n" + symTable.toString() +
                 "\nOut:\n" + out.toString() +
-                "\nFileTable:\n" + fileTable.toString();
+                "\nFileTable:\n" + fileTable.toString() +
+                "\nHeap:\n" + heap.toString();
     }
 }

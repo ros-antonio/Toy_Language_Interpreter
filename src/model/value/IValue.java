@@ -1,9 +1,7 @@
 package model.value;
 
-import model.type.Type;
+import model.type.IType;
 
 public interface IValue {
-    Type getType();
-
-    // equals method is overwritten by the record class
+    IType getType();
 }

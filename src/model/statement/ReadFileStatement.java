@@ -4,11 +4,13 @@ import exceptions.StatementException;
 import model.containers.IDictionary;
 import model.expression.IExpression;
 import model.state.ProgramState;
-import model.type.Type;
+import model.type.IntType;
+import model.type.IType;
 import model.value.IValue;
 import model.value.IntegerValue;
 import model.value.StringValue;
 import java.io.BufferedReader;
+import java.util.Objects;
 
 public record ReadFileStatement(IExpression expression, String varName) implements IStatement {
     @Override
@@ -19,12 +21,12 @@ public record ReadFileStatement(IExpression expression, String varName) implemen
             throw new StatementException("Variable not defined: " + varName);
         }
 
-        if (symTable.get(varName).getType() != Type.INTEGER) {
+        if (!symTable.get(varName).getType().equals(new IntType())) {
             throw new StatementException("Variable '" + varName + "' is not of type Integer.");
         }
 
-        IValue value = expression.evaluate(state.getSymTable());
-        if (value.getType() != Type.STRING) {
+        IValue value = expression.evaluate(state.getSymTable(), state.getHeap());
+        if (!value.getType().equals(new IntType())) {
             throw new StatementException("File path expression '" + expression + "' is not a string type.");
         }
 

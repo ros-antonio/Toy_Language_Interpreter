@@ -10,7 +10,7 @@ public record IfStatement(IExpression condition, IStatement thenBranch, IStateme
 
     @Override
     public ProgramState execute(ProgramState state) {
-        IValue result = condition.evaluate(state.getSymTable());
+        IValue result = condition.evaluate(state.getSymTable(), state.getHeap());
         if (result instanceof BooleanValue booleanValue) {
             if (booleanValue.value()) {
                 state.getExeStack().push(thenBranch);

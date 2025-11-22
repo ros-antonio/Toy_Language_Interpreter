@@ -5,7 +5,8 @@ import exceptions.StatementException;
 import model.containers.IDictionary;
 import model.expression.IExpression;
 import model.state.ProgramState;
-import model.type.Type;
+import model.type.StringType;
+import model.type.IType;
 import model.value.IValue;
 import model.value.StringValue;
 import java.io.BufferedReader;
@@ -17,9 +18,9 @@ public record OpenRFileStatement(IExpression expression) implements IStatement {
     @Override
     public ProgramState execute(ProgramState state) throws StatementException, ExpressionException {
         IDictionary<StringValue, BufferedReader> fileTable = state.getFileTable();
-        IValue value = expression.evaluate(state.getSymTable());
+        IValue value = expression.evaluate(state.getSymTable(), state.getHeap());
 
-        if (value.getType() != Type.STRING) {
+        if (!value.getType().equals(new StringType())) {
             throw new StatementException("File path expression '" + expression + "' is not a string type.");
         }
 

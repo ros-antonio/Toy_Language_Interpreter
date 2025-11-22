@@ -3,7 +3,9 @@ import model.containers.*;
 import model.expression.*;
 import model.statement.*;
 import model.state.ProgramState;
-import model.type.Type;
+import model.type.BoolType;
+import model.type.IntType;
+import model.type.StringType;
 import model.value.*;
 import repository.IRepository;
 import repository.Repository;
@@ -19,7 +21,8 @@ public class Interpreter {
         IDictionary<String, IValue> symTable1 = new GenericDictionary<>();
         IList<IValue> out1 = new GenericList<>();
         IDictionary<StringValue, BufferedReader> fileTable1 = new GenericDictionary<>();
-        ProgramState prg1 = new ProgramState(exeStack1, symTable1, out1, fileTable1);
+        IHeap<IValue> heap1 = new GenericHeap<>();
+        ProgramState prg1 = new ProgramState(exeStack1, symTable1, out1, fileTable1, heap1);
         exeStack1.push(ex1);
         IRepository repo1 = new Repository(prg1, "log1.txt");
         Controller ctr1 = new Controller(repo1);
@@ -29,7 +32,8 @@ public class Interpreter {
         IDictionary<String, IValue> symTable2 = new GenericDictionary<>();
         IList<IValue> out2 = new GenericList<>();
         IDictionary<StringValue, BufferedReader> fileTable2 = new GenericDictionary<>();
-        ProgramState prg2 = new ProgramState(exeStack2, symTable2, out2, fileTable2);
+        IHeap<IValue> heap2 = new GenericHeap<>();
+        ProgramState prg2 = new ProgramState(exeStack2, symTable2, out2, fileTable2, heap2);
         exeStack2.push(ex2);
         IRepository repo2 = new Repository(prg2, "log2.txt");
         Controller ctr2 = new Controller(repo2);
@@ -39,7 +43,8 @@ public class Interpreter {
         IDictionary<String, IValue> symTable3 = new GenericDictionary<>();
         IList<IValue> out3 = new GenericList<>();
         IDictionary<StringValue, BufferedReader> fileTable3 = new GenericDictionary<>();
-        ProgramState prg3 = new ProgramState(exeStack3, symTable3, out3, fileTable3);
+        IHeap<IValue> heap3 = new GenericHeap<>();
+        ProgramState prg3 = new ProgramState(exeStack3, symTable3, out3, fileTable3,  heap3);
         exeStack3.push(ex3);
         IRepository repo3 = new Repository(prg3, "log3.txt");
         Controller ctr3 = new Controller(repo3);
@@ -49,7 +54,8 @@ public class Interpreter {
         IDictionary<String, IValue> symTable4 = new GenericDictionary<>();
         IList<IValue> out4 = new GenericList<>();
         IDictionary<StringValue, BufferedReader> fileTable4 = new GenericDictionary<>();
-        ProgramState prg4 = new ProgramState(exeStack4, symTable4, out4, fileTable4);
+        IHeap<IValue> heap4 = new GenericHeap<>();
+        ProgramState prg4 = new ProgramState(exeStack4, symTable4, out4, fileTable4,  heap4);
         exeStack4.push(ex4);
         IRepository repo4 = new Repository(prg4, "log4.txt");
         Controller ctr4 = new Controller(repo4);
@@ -66,7 +72,7 @@ public class Interpreter {
 
     private static IStatement buildExample1() {
         return new CompoundStatement(
-                new VariableDeclarationStatement(Type.INTEGER, "v"),
+                new VariableDeclarationStatement(new IntType(), "v"),
                 new CompoundStatement(
                         new AssignmentStatement(
                                 new ConstantExpression(new IntegerValue(2)), "v"
@@ -78,9 +84,9 @@ public class Interpreter {
 
     private static IStatement buildExample2() {
         return new CompoundStatement(
-                new VariableDeclarationStatement(Type.INTEGER, "a"),
+                new VariableDeclarationStatement(new IntType(), "a"),
                 new CompoundStatement(
-                        new VariableDeclarationStatement(Type.INTEGER, "b"),
+                        new VariableDeclarationStatement(new IntType(), "b"),
                         new CompoundStatement(
                                 new AssignmentStatement(
                                         new BinaryOperatorExpression("+",
@@ -113,13 +119,13 @@ public class Interpreter {
 
     private static IStatement buildExample3() {
         return new CompoundStatement(
-                new VariableDeclarationStatement(Type.BOOLEAN, "a"),
+                new VariableDeclarationStatement(new BoolType(), "a"),
                 new CompoundStatement(
                         new AssignmentStatement(
                                 new ConstantExpression(new BooleanValue(false)), "a"
                         ),
                         new CompoundStatement(
-                                new VariableDeclarationStatement(Type.INTEGER, "v"),
+                                new VariableDeclarationStatement(new IntType(), "v"),
                                 new CompoundStatement(
                                         new IfStatement(
                                                 new VariableExpression("a"),
@@ -135,13 +141,13 @@ public class Interpreter {
 
     private static IStatement buildExample4() {
         return new CompoundStatement(
-                new VariableDeclarationStatement(Type.STRING, "varf"),
+                new VariableDeclarationStatement(new StringType(), "varf"),
                 new CompoundStatement(
                         new AssignmentStatement(new ConstantExpression(new StringValue("test.in")), "varf"),
                         new CompoundStatement(
                                 new OpenRFileStatement(new VariableExpression("varf")),
                                 new CompoundStatement(
-                                        new VariableDeclarationStatement(Type.INTEGER, "varc"),
+                                        new VariableDeclarationStatement(new IntType(), "varc"),
                                         new CompoundStatement(
                                                 new ReadFileStatement(new VariableExpression("varf"), "varc"),
                                                 new CompoundStatement(

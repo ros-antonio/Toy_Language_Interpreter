@@ -1,10 +1,10 @@
 package model.statement;
 
 import model.state.ProgramState;
-import model.type.Type;
+import model.type.IType;
 import exceptions.StatementException;
 
-public record VariableDeclarationStatement(Type type, String variableName) implements IStatement {
+public record VariableDeclarationStatement(IType type, String variableName) implements IStatement {
 
     @Override
     public ProgramState execute(ProgramState state) {

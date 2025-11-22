@@ -1,12 +1,13 @@
 package model.value;
 
-import model.type.Type;
+import model.type.IntType;
+import model.type.IType;
 
 public record IntegerValue(int value) implements IValue {
 
     @Override
-    public Type getType() {
-        return Type.INTEGER;
+    public IType getType() {
+        return new IntType();
     }
 
     @Override

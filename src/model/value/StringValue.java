@@ -1,12 +1,13 @@
 package model.value;
 
-import model.type.Type;
+import model.type.IType;
+import model.type.StringType;
 
 public record StringValue(String value) implements IValue {
 
     @Override
-    public Type getType() {
-        return Type.STRING;
+    public IType getType() {
+        return new StringType();
     }
 
     @Override

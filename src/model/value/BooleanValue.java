@@ -1,12 +1,13 @@
 package model.value;
 
-import model.type.Type;
+import model.type.BoolType;
+import model.type.IType;
 
 public record BooleanValue(boolean value) implements IValue {
 
     @Override
-    public Type getType() {
-        return Type.BOOLEAN;
+    public IType getType() {
+        return new BoolType();
     }
 
     @Override

@@ -1,7 +1,10 @@
 package model.expression;
 
 import model.containers.IDictionary;
-import model.type.Type;
+import model.containers.IHeap;
+import model.type.BoolType;
+import model.type.IType;
+import model.type.IntType;
 import model.value.BooleanValue;
 import model.value.IntegerValue;
 import model.value.IValue;
@@ -12,23 +15,23 @@ public record BinaryOperatorExpression
         implements IExpression {
 
     @Override
-    public IValue evaluate(IDictionary<String, IValue> symTable) {
-        var leftTerm = left.evaluate(symTable);
-        var rightTerm = right.evaluate(symTable);
+    public IValue evaluate(IDictionary<String, IValue> symTable, IHeap<IValue> heap) throws ExpressionException {
+        var leftTerm = left.evaluate(symTable, heap);
+        var rightTerm = right.evaluate(symTable, heap);
 
         switch (operator) {
             case "+", "-", "*", "/":
-                checkTypes(leftTerm, rightTerm, Type.INTEGER);
+                checkTypes(leftTerm, rightTerm, new IntType());
                 var leftValue = (IntegerValue) leftTerm;
                 var rightValue = (IntegerValue) rightTerm;
                 return evaluateArithmeticExpression(leftValue, rightValue);
             case "&&", "||":
-                checkTypes(leftTerm, rightTerm, Type.BOOLEAN);
+                checkTypes(leftTerm, rightTerm, new BoolType());
                 var leftValueB = (BooleanValue) leftTerm;
                 var rightValueB = (BooleanValue) rightTerm;
                 return evaluateBooleanExpression(leftValueB, rightValueB);
             case "<", "<=", "==", "!=", ">", ">=":
-                checkTypes(leftTerm, rightTerm, Type.INTEGER);
+                checkTypes(leftTerm, rightTerm, new IntType());
                 var leftValueC = (IntegerValue) leftTerm;
                 var rightValueC = (IntegerValue) rightTerm;
                 return evaluateRelationalExpression(leftValueC, rightValueC);
@@ -37,7 +40,7 @@ public record BinaryOperatorExpression
         throw new ExpressionException("Unknown operator" + operator);
     }
 
-    private void checkTypes(IValue leftTerm, IValue rightTerm, Type type) {
+    private void checkTypes(IValue leftTerm, IValue rightTerm, IType type) {
         if (leftTerm.getType() != type ||
                 rightTerm.getType() != type) {
             throw new ExpressionException("Wrong types for operator " + operator);
