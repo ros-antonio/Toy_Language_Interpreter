@@ -40,6 +40,11 @@ public class GenericDictionary<TKey, TValue> implements IDictionary<TKey, TValue
     }
 
     @Override
+    public Map<TKey, TValue> getContent() {
+        return map;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<TKey, TValue> entry : map.entrySet()) {
