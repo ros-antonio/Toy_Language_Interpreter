@@ -41,8 +41,8 @@ public record BinaryOperatorExpression
     }
 
     private void checkTypes(IValue leftTerm, IValue rightTerm, IType type) {
-        if (leftTerm.getType() != type ||
-                rightTerm.getType() != type) {
+        if (!leftTerm.getType().equals(type) ||
+                !rightTerm.getType().equals(type)) {
             throw new ExpressionException("Wrong types for operator " + operator);
         }
     }

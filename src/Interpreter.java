@@ -5,6 +5,7 @@ import model.statement.*;
 import model.state.ProgramState;
 import model.type.BoolType;
 import model.type.IntType;
+import model.type.RefType;
 import model.type.StringType;
 import model.value.*;
 import repository.IRepository;
@@ -12,6 +13,7 @@ import repository.Repository;
 import view.ExitCommand;
 import view.RunExample;
 import view.TextMenu;
+
 import java.io.BufferedReader;
 
 public class Interpreter {
@@ -44,7 +46,7 @@ public class Interpreter {
         IList<IValue> out3 = new GenericList<>();
         IDictionary<StringValue, BufferedReader> fileTable3 = new GenericDictionary<>();
         IHeap<IValue> heap3 = new GenericHeap<>();
-        ProgramState prg3 = new ProgramState(exeStack3, symTable3, out3, fileTable3,  heap3);
+        ProgramState prg3 = new ProgramState(exeStack3, symTable3, out3, fileTable3, heap3);
         exeStack3.push(ex3);
         IRepository repo3 = new Repository(prg3, "log3.txt");
         Controller ctr3 = new Controller(repo3);
@@ -55,10 +57,32 @@ public class Interpreter {
         IList<IValue> out4 = new GenericList<>();
         IDictionary<StringValue, BufferedReader> fileTable4 = new GenericDictionary<>();
         IHeap<IValue> heap4 = new GenericHeap<>();
-        ProgramState prg4 = new ProgramState(exeStack4, symTable4, out4, fileTable4,  heap4);
+        ProgramState prg4 = new ProgramState(exeStack4, symTable4, out4, fileTable4, heap4);
         exeStack4.push(ex4);
         IRepository repo4 = new Repository(prg4, "log4.txt");
         Controller ctr4 = new Controller(repo4);
+
+        IStatement ex5 = buildExample5();
+        IStack<IStatement> exeStack5 = new GenericStack<>();
+        IDictionary<String, IValue> symTable5 = new GenericDictionary<>();
+        IList<IValue> out5 = new GenericList<>();
+        IDictionary<StringValue, BufferedReader> fileTable5 = new GenericDictionary<>();
+        IHeap<IValue> heap5 = new GenericHeap<>();
+        ProgramState prg5 = new ProgramState(exeStack5, symTable5, out5, fileTable5, heap5);
+        exeStack5.push(ex5);
+        IRepository repo5 = new Repository(prg5, "log5.txt");
+        Controller ctr5 = new Controller(repo5);
+
+        IStatement ex6 = buildExample6();
+        IStack<IStatement> exeStack6 = new GenericStack<>();
+        IDictionary<String, IValue> symTable6 = new GenericDictionary<>();
+        IList<IValue> out6 = new GenericList<>();
+        IDictionary<StringValue, BufferedReader> fileTable6 = new GenericDictionary<>();
+        IHeap<IValue> heap6 = new GenericHeap<>();
+        ProgramState prg6 = new ProgramState(exeStack6, symTable6, out6, fileTable6, heap6);
+        exeStack6.push(ex6);
+        IRepository repo6 = new Repository(prg6, "log6.txt");
+        Controller ctr6 = new Controller(repo6);
 
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "Exit"));
@@ -66,6 +90,8 @@ public class Interpreter {
         menu.addCommand(new RunExample("2", ex2.toString(), ctr2));
         menu.addCommand(new RunExample("3", ex3.toString(), ctr3));
         menu.addCommand(new RunExample("4", ex4.toString(), ctr4));
+        menu.addCommand(new RunExample("5", ex5.toString(), ctr5));
+        menu.addCommand(new RunExample("6", ex6.toString(), ctr6));
 
         menu.show();
     }
@@ -162,6 +188,53 @@ public class Interpreter {
                                                 )
                                         )
                                 )
+                        )
+                )
+        );
+    }
+
+    private static IStatement buildExample5() {
+        return new CompoundStatement(
+                new VariableDeclarationStatement(new RefType(new IntType()), "v"),
+                new CompoundStatement(
+                        new NewStatement("v", new ConstantExpression(new IntegerValue(20))),
+                        new CompoundStatement(
+                                new VariableDeclarationStatement(new RefType(new RefType(new IntType())), "a"),
+                                new CompoundStatement(
+                                        new NewStatement("a", new VariableExpression("v")),
+                                        new CompoundStatement(
+                                                new NewStatement("v", new ConstantExpression(new IntegerValue(30))),
+                                                new PrintStatement(
+                                                        new ReadHeapExpression(
+                                                                new ReadHeapExpression(new VariableExpression("a"))
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    private static IStatement buildExample6() {
+        return new CompoundStatement(
+                new VariableDeclarationStatement(new IntType(), "v"),
+                new CompoundStatement(
+                        new AssignmentStatement(
+                                new ConstantExpression(new IntegerValue(4)), "v"
+                        ),
+                        new CompoundStatement(
+                                new WhileStatement(
+                                        new BinaryOperatorExpression(">", new VariableExpression("v"), new ConstantExpression(new IntegerValue(0))),
+                                        new CompoundStatement(
+                                                new PrintStatement(new VariableExpression("v")),
+                                                new AssignmentStatement(
+                                                        new BinaryOperatorExpression("-", new VariableExpression("v"), new ConstantExpression(new IntegerValue(1))),
+                                                        "v"
+                                                )
+                                        )
+                                ),
+                                new PrintStatement(new VariableExpression("v"))
                         )
                 )
         );
