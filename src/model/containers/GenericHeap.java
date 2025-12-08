@@ -1,6 +1,5 @@
 package model.containers;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -8,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import exceptions.ADTException;
 
 public class GenericHeap<TValue> implements IHeap<TValue> {
-    private Map<Integer, TValue> map;
+    private final Map<Integer, TValue> map;
     private final AtomicInteger freeLocation;
 
     public GenericHeap() {
@@ -49,7 +48,8 @@ public class GenericHeap<TValue> implements IHeap<TValue> {
 
     @Override
     public void setContent(Map<Integer, TValue> content) {
-        this.map = new ConcurrentHashMap<>(content);
+        map.clear();
+        map.putAll(content);
     }
 
     @Override

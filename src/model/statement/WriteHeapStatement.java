@@ -20,7 +20,7 @@ public record WriteHeapStatement(String varName, IExpression expression) impleme
             throw new StatementException("Variable " + varName + " does not exist");
         }
         IValue refValue = symTable.get(varName);
-        if (!(refValue.getType() instanceof RefType)) {
+        if (!(refValue.getType() instanceof RefType refType)) {
             throw new StatementException("Variable " + varName + " is not a reference type");
         }
         RefValue ref = (RefValue) refValue;
@@ -30,7 +30,6 @@ public record WriteHeapStatement(String varName, IExpression expression) impleme
         }
 
         IValue value = expression.evaluate(symTable, heap);
-        RefType refType = (RefType) value.getType();
         IType locationType = refType.getInner();
 
         if (!value.getType().equals(locationType)) {
