@@ -35,7 +35,7 @@ public record NewStatement(String varName, IExpression expression) implements IS
         int newAddress = heap.allocate(eval);
         symTable.update(varName, new RefValue(newAddress, locationType));
 
-        return state;
+        return null;
     }
 
     @Override

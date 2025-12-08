@@ -1,5 +1,7 @@
 package model.state;
 
+import exceptions.ADTException;
+import exceptions.StatementException;
 import model.containers.IStack;
 import model.containers.IList;
 import model.containers.IDictionary;
@@ -16,6 +18,8 @@ public class ProgramState {
     private IList<IValue> out;
     private IDictionary<StringValue, BufferedReader> fileTable;
     private IHeap<IValue> heap;
+    private final int id;
+    private static int lastId = 0;
 
     public ProgramState(IStack<IStatement> exeStack, IDictionary<String, IValue> symTable,
                         IList<IValue> out, IDictionary<StringValue, BufferedReader> fileTable, IHeap<IValue> heap) {
@@ -24,6 +28,28 @@ public class ProgramState {
         this.out = out;
         this.fileTable = fileTable;
         this.heap = heap;
+        this.id = setId();
+    }
+
+    public synchronized int setId() {
+        lastId++;
+        return lastId;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public boolean isNotCompleted() {
+        return !exeStack.isEmpty();
+    }
+
+    public ProgramState oneStep() throws StatementException, ADTException {
+        if (exeStack.isEmpty()) {
+            throw new StatementException("Program state stack is empty");
+        }
+        IStatement currentStatement = exeStack.pop();
+        return currentStatement.execute(this);
     }
 
     public IHeap<IValue> getHeap() {
@@ -68,7 +94,8 @@ public class ProgramState {
 
     @Override
     public String toString() {
-        return "ExeStack:\n" + exeStack.toString() +
+        return "Id: " + id + "\n" +
+                "ExeStack:\n" + exeStack.toString() +
                 "\nSymTable:\n" + symTable.toString() +
                 "\nOut:\n" + out.toString() +
                 "\nFileTable:\n" + fileTable.toString() +

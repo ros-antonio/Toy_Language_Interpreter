@@ -37,7 +37,7 @@ public record OpenRFileStatement(IExpression expression) implements IStatement {
             throw new StatementException("Failed to open file '" + filePath.value() + "': " + e.getMessage());
         }
 
-        return state;
+        return null;
     }
 
     @Override

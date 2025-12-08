@@ -13,7 +13,7 @@ public record VariableDeclarationStatement(IType type, String variableName) impl
             throw new StatementException("Variable already defined");
         }
         symbolTable.insert(variableName, type.getDefaultValue());
-        return state;
+        return null;
     }
 
     @Override

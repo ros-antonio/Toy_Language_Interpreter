@@ -84,6 +84,17 @@ public class Interpreter {
         IRepository repo6 = new Repository(prg6, "log6.txt");
         Controller ctr6 = new Controller(repo6);
 
+        IStatement ex7 = buildExample7();
+        IStack<IStatement> exeStack7 = new GenericStack<>();
+        IDictionary<String, IValue> symTable7 = new GenericDictionary<>();
+        IList<IValue> out7 = new GenericList<>();
+        IDictionary<StringValue, BufferedReader> fileTable7 = new GenericDictionary<>();
+        IHeap<IValue> heap7 = new GenericHeap<>();
+        ProgramState prg7 = new ProgramState(exeStack7, symTable7, out7, fileTable7, heap7);
+        exeStack7.push(ex7);
+        IRepository repo7 = new Repository(prg7, "log7.txt");
+        Controller ctr7 = new Controller(repo7);
+
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "Exit"));
         menu.addCommand(new RunExample("1", ex1.toString(), ctr1));
@@ -92,6 +103,7 @@ public class Interpreter {
         menu.addCommand(new RunExample("4", ex4.toString(), ctr4));
         menu.addCommand(new RunExample("5", ex5.toString(), ctr5));
         menu.addCommand(new RunExample("6", ex6.toString(), ctr6));
+        menu.addCommand(new RunExample("7", ex7.toString(), ctr7));
 
         menu.show();
     }
@@ -235,6 +247,37 @@ public class Interpreter {
                                         )
                                 ),
                                 new PrintStatement(new VariableExpression("v"))
+                        )
+                )
+        );
+    }
+
+    private static IStatement buildExample7() {
+        return new CompoundStatement(
+                new VariableDeclarationStatement(new IntType(), "v"),
+                new CompoundStatement(
+                        new VariableDeclarationStatement(new RefType(new IntType()), "a"),
+                        new CompoundStatement(
+                                new AssignmentStatement(new ConstantExpression(new IntegerValue(10)), "v"),
+                                new CompoundStatement(
+                                        new NewStatement("a", new ConstantExpression(new IntegerValue(22))),
+                                        new CompoundStatement(
+                                                new ForkStatement(new CompoundStatement(
+                                                        new WriteHeapStatement("a", new ConstantExpression(new IntegerValue(30))),
+                                                        new CompoundStatement(
+                                                                new AssignmentStatement(new ConstantExpression(new IntegerValue(32)), "v"),
+                                                                new CompoundStatement(
+                                                                        new PrintStatement(new VariableExpression("v")),
+                                                                        new PrintStatement(new ReadHeapExpression(new VariableExpression("a")))
+                                                                )
+                                                        )
+                                                )),
+                                                new CompoundStatement(
+                                                        new PrintStatement(new VariableExpression("v")),
+                                                        new PrintStatement(new ReadHeapExpression(new VariableExpression("a")))
+                                                )
+                                        )
+                                )
                         )
                 )
         );

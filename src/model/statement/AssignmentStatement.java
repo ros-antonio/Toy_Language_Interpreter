@@ -22,7 +22,7 @@ public record AssignmentStatement(IExpression expression, String variableName)
             throw new StatementException("Type mismatch");
         }
         symbolTable.update(variableName, value);
-        return state;
+        return null;
     }
 
     @Override

@@ -33,7 +33,7 @@ public record CloseRFileStatement(IExpression expression) implements IStatement 
         } catch (Exception e) {
             throw new StatementException("Could not close file '" + filePath + "': " + e.getMessage());
         }
-        return state;
+        return null;
     }
 
     @Override

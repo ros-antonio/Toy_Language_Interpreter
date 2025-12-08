@@ -20,7 +20,7 @@ public record IfStatement(IExpression condition, IStatement thenBranch, IStateme
         } else {
             throw new StatementException("Condition expression does not evaluate to a boolean.");
         }
-        return state;
+        return null;
     }
 
     @Override

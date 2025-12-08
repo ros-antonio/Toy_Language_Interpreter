@@ -1,13 +1,16 @@
 package model.containers;
 
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+
 import exceptions.ADTException;
 
 public class GenericList<T> implements IList<T> {
-    LinkedList<T> list;
+    private final List<T> list;
 
     public GenericList() {
-        list = new LinkedList<>();
+        list = Collections.synchronizedList(new LinkedList<>());
     }
 
     @Override

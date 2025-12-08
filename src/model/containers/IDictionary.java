@@ -10,5 +10,6 @@ public interface IDictionary<TKey, TValue> {
     TValue get(TKey key) throws ADTException;
     boolean hasKey(TKey key);
     Map<TKey, TValue> getContent();
+    IDictionary<TKey, TValue> deepCopy();
     String toString();
 }

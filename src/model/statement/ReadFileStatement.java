@@ -51,7 +51,7 @@ public record ReadFileStatement(IExpression expression, String varName) implemen
         } catch (Exception e) {
             throw new StatementException("Error reading from file '" + filePath + "': " + e.getMessage());
         }
-        return state;
+        return null;
     }
 
     @Override

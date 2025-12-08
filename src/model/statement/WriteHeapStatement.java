@@ -38,7 +38,7 @@ public record WriteHeapStatement(String varName, IExpression expression) impleme
         }
 
         heap.update(address, value);
-        return state;
+        return null;
     }
 
     @Override
