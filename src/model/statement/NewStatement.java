@@ -39,6 +39,20 @@ public record NewStatement(String varName, IExpression expression) implements IS
     }
 
     @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        if (!typeEnv.hasKey(varName)) {
+            throw new StatementException("Variable " + varName + " not found in type environment");
+        }
+        IType varType = typeEnv.get(varName);
+        IType exprType = expression.typecheck(typeEnv);
+
+        if(varType.equals(new RefType(exprType)))
+            return typeEnv;
+        else
+            throw new StatementException("NEW statement: right hand side and left hand side have different types");
+    }
+
+    @Override
     public String toString() {
         return "new(" + varName + ", " + expression.toString() + ")";
     }

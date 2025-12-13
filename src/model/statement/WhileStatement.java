@@ -2,9 +2,11 @@ package model.statement;
 
 import exceptions.ExpressionException;
 import exceptions.StatementException;
+import model.containers.IDictionary;
 import model.expression.IExpression;
 import model.state.ProgramState;
 import model.type.BoolType;
+import model.type.IType;
 import model.value.BooleanValue;
 import model.value.IValue;
 
@@ -22,6 +24,17 @@ public record WhileStatement(IExpression expression, IStatement statement) imple
         }
 
         return null;
+    }
+
+    @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        IType typeExpr = expression.typecheck(typeEnv);
+        if (typeExpr.equals(new BoolType())) {
+            statement.typecheck(typeEnv.deepCopy());
+            return typeEnv;
+        } else {
+            throw new StatementException("The condition of WHILE does not have the type Bool.");
+        }
     }
 
     @Override

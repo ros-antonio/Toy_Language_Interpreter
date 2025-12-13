@@ -1,5 +1,6 @@
 package model.statement;
 
+import model.containers.IDictionary;
 import model.expression.IExpression;
 import model.state.ProgramState;
 import model.type.IType;
@@ -23,6 +24,19 @@ public record AssignmentStatement(IExpression expression, String variableName)
         }
         symbolTable.update(variableName, value);
         return null;
+    }
+
+    @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        if(!typeEnv.hasKey(variableName)) {
+            throw new StatementException("Assignment: variable " + variableName + " not declared");
+        }
+        IType varType = typeEnv.get(variableName);
+        IType expType = expression.typecheck(typeEnv);
+        if (!varType.equals(expType)) {
+            throw new StatementException("Assignment: right hand side and left hand side have different types");
+        }
+        return typeEnv;
     }
 
     @Override

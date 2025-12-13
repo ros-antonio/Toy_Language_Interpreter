@@ -41,6 +41,16 @@ public record OpenRFileStatement(IExpression expression) implements IStatement {
     }
 
     @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        IType typeExpr = expression.typecheck(typeEnv);
+        if (typeExpr.equals(new StringType())) {
+            return typeEnv;
+        } else {
+            throw new StatementException("The file path expression of OPENRFILE does not have the type String.");
+        }
+    }
+
+    @Override
     public String toString() {
         return "openRFile(" + expression.toString() + ")";
     }

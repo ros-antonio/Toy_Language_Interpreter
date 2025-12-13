@@ -6,11 +6,11 @@ import model.expression.IExpression;
 import model.state.ProgramState;
 import model.type.IntType;
 import model.type.IType;
+import model.type.StringType;
 import model.value.IValue;
 import model.value.IntegerValue;
 import model.value.StringValue;
 import java.io.BufferedReader;
-import java.util.Objects;
 
 public record ReadFileStatement(IExpression expression, String varName) implements IStatement {
     @Override
@@ -52,6 +52,17 @@ public record ReadFileStatement(IExpression expression, String varName) implemen
             throw new StatementException("Error reading from file '" + filePath + "': " + e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        if(!expression.typecheck(typeEnv).equals(new StringType()))
+            throw new StatementException("The file path expression of READFILE does not have the type String.");
+        if(!typeEnv.hasKey(varName))
+            throw new StatementException("Variable '" + varName + "' is not defined.");
+        if(!typeEnv.get(varName).equals(new IntType()))
+            throw new StatementException("Variable '" + varName + "' is not of type Integer.");
+        return typeEnv;
     }
 
     @Override

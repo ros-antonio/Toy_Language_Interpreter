@@ -1,5 +1,6 @@
 package model.statement;
 
+import model.containers.IDictionary;
 import model.state.ProgramState;
 import model.type.IType;
 import exceptions.StatementException;
@@ -14,6 +15,12 @@ public record VariableDeclarationStatement(IType type, String variableName) impl
         }
         symbolTable.insert(variableName, type.getDefaultValue());
         return null;
+    }
+
+    @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        typeEnv.insert(variableName, type);
+        return typeEnv;
     }
 
     @Override

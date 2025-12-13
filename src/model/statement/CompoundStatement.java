@@ -1,6 +1,9 @@
 package model.statement;
 
+import exceptions.StatementException;
+import model.containers.IDictionary;
 import model.state.ProgramState;
+import model.type.IType;
 
 public record CompoundStatement(IStatement first, IStatement second) implements IStatement {
 
@@ -10,6 +13,11 @@ public record CompoundStatement(IStatement first, IStatement second) implements 
         stack.push(second);
         stack.push(first);
         return null;
+    }
+
+    @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        return second.typecheck(first.typecheck(typeEnv));
     }
 
     @Override

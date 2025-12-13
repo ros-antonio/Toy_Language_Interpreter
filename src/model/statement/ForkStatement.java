@@ -4,6 +4,7 @@ import model.containers.GenericStack;
 import model.containers.IDictionary;
 import model.containers.IStack;
 import model.state.ProgramState;
+import model.type.IType;
 import model.value.IValue;
 import exceptions.StatementException;
 
@@ -26,6 +27,12 @@ public record ForkStatement(IStatement statement) implements IStatement {
         newThread.getExeStack().push(statement);
 
         return newThread;
+    }
+
+    @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        statement.typecheck(typeEnv.deepCopy());
+        return typeEnv;
     }
 
     @Override

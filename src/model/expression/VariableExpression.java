@@ -2,6 +2,7 @@ package model.expression;
 
 import model.containers.IDictionary;
 import model.containers.IHeap;
+import model.type.IType;
 import model.value.IValue;
 import exceptions.ADTException;
 import exceptions.ExpressionException;
@@ -14,6 +15,15 @@ public record VariableExpression(String variableName) implements IExpression {
             return symTable.get(variableName);
         } catch (ADTException e) {
             throw new ExpressionException("Variable not defined: " + variableName);
+        }
+    }
+
+    @Override
+    public IType typecheck(IDictionary<String, IType> typeEnv) throws ExpressionException {
+        try {
+            return typeEnv.get(variableName);
+        } catch (ADTException e) {
+            throw new ExpressionException("Variable not found: " + variableName);
         }
     }
 

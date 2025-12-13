@@ -41,6 +41,22 @@ public record WriteHeapStatement(String varName, IExpression expression) impleme
     }
 
     @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        if (!typeEnv.hasKey(varName)) {
+            throw new StatementException("Variable " + varName + " does not exist in the type environment");
+        }
+        IType varType = typeEnv.get(varName);
+        if (!(varType instanceof RefType refType)) {
+            throw new StatementException("Variable " + varName + " is not of RefType");
+        }
+        IType exprType = expression.typecheck(typeEnv);
+        if (!exprType.equals(refType.getInner())) {
+            throw new StatementException("Type mismatch (expression type != locationType)");
+        }
+        return typeEnv;
+    }
+
+    @Override
     public String toString() {
         return "wH(" + varName + ", " + expression.toString() + ")";
     }

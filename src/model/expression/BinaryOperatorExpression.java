@@ -40,6 +40,37 @@ public record BinaryOperatorExpression
         throw new ExpressionException("Unknown operator" + operator);
     }
 
+    @Override
+    public IType typecheck(IDictionary<String, IType> typeEnv) throws ExpressionException {
+        IType leftType = left.typecheck(typeEnv);
+        IType rightType = right.typecheck(typeEnv);
+
+        return switch (operator) {
+            case "+", "-", "*", "/" -> {
+                if (leftType.equals(new IntType()) && rightType.equals(new IntType())) {
+                    yield new IntType();
+                } else {
+                    throw new ExpressionException("Operands of " + operator + " must be integers.");
+                }
+            }
+            case "&&", "||" -> {
+                if (leftType.equals(new BoolType()) && rightType.equals(new BoolType())) {
+                    yield new BoolType();
+                } else {
+                    throw new ExpressionException("Operands of " + operator + " must be booleans.");
+                }
+            }
+            case "<", "<=", "==", "!=", ">", ">=" -> {
+                if (leftType.equals(new IntType()) && rightType.equals(new IntType())) {
+                    yield new BoolType();
+                } else {
+                    throw new ExpressionException("Operands of " + operator + " must be integers.");
+                }
+            }
+            default -> throw new ExpressionException("Unknown operator " + operator);
+        };
+    }
+
     private void checkTypes(IValue leftTerm, IValue rightTerm, IType type) {
         if (!leftTerm.getType().equals(type) ||
                 !rightTerm.getType().equals(type)) {

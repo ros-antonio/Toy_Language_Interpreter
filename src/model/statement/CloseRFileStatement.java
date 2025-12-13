@@ -4,6 +4,7 @@ import exceptions.StatementException;
 import model.containers.IDictionary;
 import model.expression.IExpression;
 import model.state.ProgramState;
+import model.type.IType;
 import model.type.StringType;
 import model.value.IValue;
 import model.value.StringValue;
@@ -34,6 +35,16 @@ public record CloseRFileStatement(IExpression expression) implements IStatement 
             throw new StatementException("Could not close file '" + filePath + "': " + e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public IDictionary<String, IType> typecheck(IDictionary<String, IType> typeEnv) throws StatementException {
+        IType typeExpr = expression.typecheck(typeEnv);
+        if (typeExpr.equals(new StringType())) {
+            return typeEnv;
+        } else {
+            throw new StatementException("The file path expression of CLOSERFILE does not have the type String.");
+        }
     }
 
     @Override
