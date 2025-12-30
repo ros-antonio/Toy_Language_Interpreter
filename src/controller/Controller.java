@@ -18,9 +18,10 @@ import java.util.stream.Collectors;
 
 public class Controller {
     public final IRepository repository;
-    private ExecutorService executor;
+    private final ExecutorService executor;
     public Controller(IRepository repository) {
         this.repository = repository;
+        this.executor = Executors.newFixedThreadPool(2);
     }
 
     private List<ProgramState> removeCompletedPrg(List<ProgramState> inPrgList) {
@@ -29,7 +30,7 @@ public class Controller {
                 .collect(Collectors.toList());
     }
 
-    private void oneStepForAllPrg(List<ProgramState> prgList) throws InterruptedException {
+    public void oneStepForAllPrg(List<ProgramState> prgList) throws InterruptedException {
         prgList.forEach(prg -> {
             try {
                 repository.logPrgStateExec(prg);
@@ -68,8 +69,6 @@ public class Controller {
     }
 
     public void allSteps() throws InterruptedException {
-        executor = Executors.newFixedThreadPool(2);
-
         List<ProgramState> prgList = removeCompletedPrg(repository.getPrgList());
 
         while (!prgList.isEmpty()) {
