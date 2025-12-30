@@ -26,7 +26,7 @@ public record ReadFileStatement(IExpression expression, String varName) implemen
         }
 
         IValue value = expression.evaluate(state.getSymTable(), state.getHeap());
-        if (!value.getType().equals(new IntType())) {
+        if (!value.getType().equals(new StringType())) {
             throw new StatementException("File path expression '" + expression + "' is not a string type.");
         }
 
