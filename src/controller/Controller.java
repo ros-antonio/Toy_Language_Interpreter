@@ -24,7 +24,7 @@ public class Controller {
         this.executor = Executors.newFixedThreadPool(2);
     }
 
-    private List<ProgramState> removeCompletedPrg(List<ProgramState> inPrgList) {
+    public List<ProgramState> removeCompletedPrg(List<ProgramState> inPrgList) {
         return inPrgList.stream()
                 .filter(ProgramState::isNotCompleted)
                 .collect(Collectors.toList());
@@ -66,6 +66,10 @@ public class Controller {
         });
 
         repository.setPrgList(prgList);
+    }
+
+    public void shutdown() {
+        executor.shutdownNow();
     }
 
     public void allSteps() throws InterruptedException {
