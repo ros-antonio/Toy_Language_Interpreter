@@ -6,10 +6,7 @@ import model.value.IValue;
 import model.value.RefValue;
 import repository.IRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -76,13 +73,16 @@ public class Controller {
         List<ProgramState> prgList = removeCompletedPrg(repository.getPrgList());
 
         while (!prgList.isEmpty()) {
-            List<Integer> symTableAddr = prgList.stream()
-                    .flatMap(p -> getAddrFromValues(p.getSymTable().getContent().values()).stream())
+            List<IValue> symTableValues = prgList.stream()
+                    .flatMap(p -> p.getSymTable().getContent().values().stream())
                     .collect(Collectors.toList());
 
-            Map<Integer, IValue> newHeap = safeGarbageCollector(symTableAddr, prgList.getFirst().getHeap().getContent());
-            prgList.getFirst().getHeap().setContent(newHeap);
+            Map<Integer, IValue> heapContent = prgList.getFirst().getHeap().getContent();
 
+            List<Integer> accessibleAddresses = getAccessibleAddresses(symTableValues, heapContent);
+            Map<Integer, IValue> newHeap = safeGarbageCollector(accessibleAddresses, heapContent);
+
+            prgList.getFirst().getHeap().setContent(newHeap);
             oneStepForAllPrg(prgList);
 
             prgList = removeCompletedPrg(repository.getPrgList());
@@ -93,24 +93,39 @@ public class Controller {
         repository.setPrgList(prgList);
     }
 
-    private List<Integer> getAddrFromValues(Collection<IValue> symTableValues) {
-        return symTableValues.stream()
-                .filter(v -> v instanceof RefValue)
-                .map(v -> {
-                    RefValue v1 = (RefValue) v;
-                    return v1.address();
-                })
-                .collect(Collectors.toList());
+    public List<Integer> getAccessibleAddresses(Collection<IValue> symTableValues, Map<Integer, IValue> heap) {
+        Set<Integer> visited = new HashSet<>();
+        Deque<Integer> stack = new ArrayDeque<>();
+
+        for (IValue v : symTableValues) {
+            if (v instanceof RefValue) {
+                int addr = ((RefValue) v).address();
+                if (!visited.contains(addr)) {
+                    visited.add(addr);
+                    stack.push(addr);
+                }
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            int addr = stack.pop();
+            if (heap.containsKey(addr)) {
+                IValue val = heap.get(addr);
+                if (val instanceof RefValue) {
+                    int innerAddr = ((RefValue) val).address();
+                    if (!visited.contains(innerAddr)) {
+                        visited.add(innerAddr);
+                        stack.push(innerAddr);
+                    }
+                }
+            }
+        }
+        return new ArrayList<>(visited);
     }
 
-    private Map<Integer, IValue> safeGarbageCollector(
-            List<Integer> symTableAddr, Map<Integer, IValue> heap) {
-        // find the addresses that are referenced from the symbol table (this makes it safe)
-        List<Integer> reachableAddresses = getAddrFromValues(heap.values());
-        reachableAddresses.addAll(symTableAddr);
-
+    private Map<Integer, IValue> safeGarbageCollector(List<Integer> accessibleAddresses, Map<Integer, IValue> heap) {
         return heap.entrySet().stream()
-                .filter(e -> reachableAddresses.contains(e.getKey()))
+                .filter(e -> accessibleAddresses.contains(e.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
