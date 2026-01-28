@@ -27,7 +27,6 @@ public class MainWindowController {
     @FXML private TableColumn<Pair<String, IValue>, String> variableNameColumn;
     @FXML private TableColumn<Pair<String, IValue>, String> variableValueColumn;
     @FXML private ListView<String> executionStackListView;
-    @FXML private Button runOneStepButton;
 
     private Controller controller;
 
